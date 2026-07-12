@@ -5,5 +5,6 @@ const { authenticateToken } = require('../middlewares/authMiddleware');
 
 router.get('/', authenticateToken, driversController.getDrivers);
 router.post('/', authenticateToken, driversController.createDriver);
+router.post('/login', driversController.driverLogin);
 
 module.exports = router;

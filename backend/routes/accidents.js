@@ -4,5 +4,6 @@ const accidentsController = require('../controllers/accidentsController');
 const { authenticateToken } = require('../middlewares/authMiddleware');
 
 router.get('/', authenticateToken, accidentsController.getAccidents);
+router.post('/', authenticateToken, accidentsController.reportAccident);
 
 module.exports = router;

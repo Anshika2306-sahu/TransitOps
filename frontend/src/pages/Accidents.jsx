@@ -13,7 +13,8 @@ const Accidents = () => {
 
   const fetchAccidents = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/accidents');
+      const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
+      const res = await axios.get('http://localhost:5000/api/accidents', { headers });
       setAccidents(res.data);
     } catch (err) {
       console.error(err);

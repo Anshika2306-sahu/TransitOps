@@ -17,4 +17,20 @@ const getAccidents = async (req, res) => {
   }
 };
 
-module.exports = { getAccidents };
+const reportAccident = async (req, res) => {
+  const { vehicle_id, description, location_lat, location_lng } = req.body;
+  try {
+    const db = await getDb();
+    const result = await db.query(
+      `INSERT INTO accidents (vehicle_id, description, location_lat, location_lng, timestamp) 
+       VALUES ($1, $2, $3, $4, NOW()) RETURNING *`,
+      [vehicle_id, description || 'SOS ALERT - Driver triggered emergency panic button!', location_lat, location_lng]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to report accident' });
+  }
+};
+
+module.exports = { getAccidents, reportAccident };

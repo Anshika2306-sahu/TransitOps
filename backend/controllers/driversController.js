@@ -27,4 +27,27 @@ const createDriver = async (req, res) => {
   }
 };
 
-module.exports = { getDrivers, createDriver };
+const driverLogin = async (req, res) => {
+  const { license_number } = req.body;
+  try {
+    const db = await getDb();
+    
+    // Hackathon Demo Mode: Bypass validation and find ANY active trip
+    const tripRes = await db.query(`
+      SELECT vehicle_id FROM trips 
+      WHERE status = 'On Trip' OR status = 'Dispatched'
+      ORDER BY start_time DESC LIMIT 1
+    `);
+
+    if (tripRes.rows.length === 0) {
+      return res.status(403).json({ error: 'No active dispatch found. Please dispatch a trip on the Dashboard first.' });
+    }
+
+    res.json({ vehicle_id: tripRes.rows[0].vehicle_id, driver_name: 'Demo Driver' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Login failed' });
+  }
+};
+
+module.exports = { getDrivers, createDriver, driverLogin };
